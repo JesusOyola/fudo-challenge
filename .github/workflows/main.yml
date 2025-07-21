@@ -34,7 +34,7 @@ jobs:
        
       # Build app for production
       - name: Build Angular app
-        run: npm run build
+        run: npm run build:prod
       - name: List dist folder
         run: ls -R dist
 
