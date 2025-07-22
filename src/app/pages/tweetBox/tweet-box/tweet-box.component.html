@@ -1,0 +1,36 @@
+<div class="tweetBox">
+    <form (ngSubmit)="handleSubmit()">
+      <div class="tweetBox-user">
+        <img src="https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L.png" width="48" />
+        <input
+          type="text"
+          placeholder="Ingresá tu nombre"
+          [(ngModel)]="name"
+          name="name"
+          required
+        />
+      </div>
+  
+      <div class="tweetBox-content">
+        <input
+          type="text"
+          placeholder="¿Qué está pasando?"
+          [(ngModel)]="content"
+          name="content"
+          required
+        />
+      </div>
+  
+      <div class="tweetBox-footer">
+        <input
+          type="text"
+          placeholder="Ingresá una URL de imagen (opcional)"
+          [(ngModel)]="imgurl"
+          name="imgurl"
+          class="tweetBox-img"
+        />
+        <button type="submit" class="tweetBox-tweetButton">Tweet</button>
+      </div>
+    </form>
+  </div>
+  

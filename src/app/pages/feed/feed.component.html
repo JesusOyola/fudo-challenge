@@ -1,1 +1,44 @@
-<p>feed works!</p>
+<div class="feed">
+  <div class="feed-header">
+    <ng-container *ngIf="locationPath === '/home'; else notHome">
+      <h2>Home</h2>
+    </ng-container>
+
+    <ng-template #notHome>
+      <a [routerLink]="'/home'" (click)="getTweets()">
+        <span matTooltip="Volver">
+          <span class="material-icons feed-arrowIcon" title="Volver"
+            >arrow_back</span
+          >
+        </span>
+      </a>
+
+      <ng-container
+        *ngIf="locationPath.startsWith('/tweets'); else showTweetInfo"
+      >
+        <h2>Tweet</h2>
+      </ng-container>
+
+      <ng-template #showTweetInfo>
+        <div class="feed-tweet">
+          <h2>{{ tweets.length ? tweets[0].name : "" }}</h2>
+          <div>
+            <span class="material-icons feed-badge">verified</span>
+          </div>
+        </div>
+      </ng-template>
+    </ng-template>
+  </div>
+  @if(locationPath === '/home'){
+  <app-tweet-box></app-tweet-box>
+  }
+
+  <div *ngFor="let tweet of tweets.slice().reverse()" [attr.key]="tweet.tid">
+    <app-post
+      [id]="tweet.tid"
+      [name]="tweet.name"
+      [content]="tweet.content"
+      [imgurl]="tweet.imgurl"
+    ></app-post>
+  </div>
+</div>

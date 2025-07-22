@@ -1,0 +1,39 @@
+<div class="post">
+    <div class="post-header">
+      <div class="post-avatar">
+        <img src="https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L.png" alt="avatar" width="48" />
+      </div>
+      <div class="post-headerElements">
+        <div>
+          <div class="post-headerName">
+            <h3 (click)="getUserTweets()">
+              <a [routerLink]="['/users', name]" class="post-text">{{ name }}</a>
+            </h3>
+            <div>
+              <span class="material-icons post-badge">verified</span>
+            </div>
+          </div>
+          <div class="post-headerContent">
+            <p (click)="getSingleTweet()">
+              <a [routerLink]="['/tweets', id]" class="post-text">{{ content }}</a>
+            </p>
+          </div>
+        </div>
+        <div class="post-trash" title="Borrar">
+          <span class="material-icons" (click)="deleteTweet()">delete</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="post-body" *ngIf="imgurl">
+      <img [src]="imgurl" alt="tweet" />
+    </div>
+  
+    <div class="post-footer">
+      <span class="material-icons">chat_bubble_outline</span>
+      <span class="material-icons">repeat</span>
+      <span class="material-icons">favorite_border</span>
+      <span class="material-icons">publish</span>
+    </div>
+  </div>
+  

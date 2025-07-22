@@ -12,7 +12,7 @@ export class SidebarComponent {
 
   getTweets() {
     console.log('getTweets llamado');
-    // Tu lógica aquí
+    
   }
 
   isActive(path: string): boolean {
