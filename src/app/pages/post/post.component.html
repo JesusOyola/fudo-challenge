@@ -1,39 +1,54 @@
 <div class="post">
-    <div class="post-header">
-      <div class="post-avatar">
-        <img src="https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L.png" alt="avatar" width="48" />
-      </div>
-      <div class="post-headerElements">
-        <div>
-          <div class="post-headerName">
-            <h3 (click)="getUserTweets()">
-              <a [routerLink]="['/users', name]" class="post-text">{{ name }}</a>
-            </h3>
-            <div>
-              <span class="material-icons post-badge">verified</span>
-            </div>
-          </div>
-          <div class="post-headerContent">
-            <p (click)="getSingleTweet()">
-              <a [routerLink]="['/tweets', id]" class="post-text">{{ content }}</a>
-            </p>
+  <div class="post-header">
+    <div class="post-avatar">
+      <img
+        [src]="
+          avatar ||
+          'https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L.png'
+        "
+        alt="avatar"
+        width="48"
+        (error)="
+          avatar =
+            'https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L.png'
+        "
+      />
+    </div>
+    <div class="post-headerElements">
+      <div>
+        <div class="post-headerName">
+          <h3>
+            <span class="post-text" (click)="onGetSingleTweet()">{{
+              name
+            }}</span>
+            <span class="created-at">{{ createdAt | date : "short" }}</span>
+          </h3>
+          <div>
+            <span class="material-icons post-badge">verified</span>
           </div>
         </div>
-        <div class="post-trash" title="Borrar">
-          <span class="material-icons" (click)="deleteTweet()">delete</span>
+        <div class="post-headerContent">
+          <p (click)="onGetSingleTweet()">
+            <a class="post-text">{{ title }}</a>
+          </p>
         </div>
       </div>
-    </div>
-  
-    <div class="post-body" *ngIf="imgurl">
-      <img [src]="imgurl" alt="tweet" />
-    </div>
-  
-    <div class="post-footer">
-      <span class="material-icons">chat_bubble_outline</span>
-      <span class="material-icons">repeat</span>
-      <span class="material-icons">favorite_border</span>
-      <span class="material-icons">publish</span>
+      <div class="post-trash" title="Borrar">
+        <span class="material-icons" (click)="deleteTweet()">delete</span>
+      </div>
     </div>
   </div>
-  
+
+  <div class="post-body">
+    @if(locationPath.includes('/posts')){
+    <p class="content-text">{{ content }}</p>
+    }
+  </div>
+
+  <div class="post-footer">
+    <span class="material-icons">chat_bubble_outline</span>
+    <span class="material-icons">repeat</span>
+    <span class="material-icons">favorite_border</span>
+    <span class="material-icons">publish</span>
+  </div>
+</div>

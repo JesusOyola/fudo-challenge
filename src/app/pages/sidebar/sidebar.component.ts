@@ -18,4 +18,9 @@ export class SidebarComponent {
   isActive(path: string): boolean {
     return this.router.url === path;
   }
+
+  /* backToHome(){
+    this.router.navigate(['/home']);
+    this.getAllPosts()
+  } */
 }

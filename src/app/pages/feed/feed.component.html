@@ -1,44 +1,51 @@
 <div class="feed">
   <div class="feed-header">
     <ng-container *ngIf="locationPath === '/home'; else notHome">
-      <h2>Home</h2>
+      <h2>Todos los Posts</h2>
     </ng-container>
 
     <ng-template #notHome>
-      <a [routerLink]="'/home'" (click)="getTweets()">
-        <span matTooltip="Volver">
+     
+        <span matTooltip="Volver" (click)="backToHome()">
           <span class="material-icons feed-arrowIcon" title="Volver"
             >arrow_back</span
           >
         </span>
-      </a>
+      
 
       <ng-container
-        *ngIf="locationPath.startsWith('/tweets'); else showTweetInfo"
+        *ngIf="locationPath.startsWith('/posts/') && !locationPath.includes('/edit'); else showPostInfo"
       >
-        <h2>Tweet</h2>
+        <h2>Detalle del Post</h2>
       </ng-container>
 
-      <ng-template #showTweetInfo>
-        <div class="feed-tweet">
-          <h2>{{ tweets.length ? tweets[0].name : "" }}</h2>
+      <ng-template #showPostInfo>
+        <div class="feed-tweet" *ngIf="currentPost">
+          <h2>{{ currentPost.name }}</h2>
           <div>
             <span class="material-icons feed-badge">verified</span>
           </div>
         </div>
-      </ng-template>
+        <div class="feed-tweet" *ngIf="!currentPost && locationPath.includes('/edit')">
+            <h2>Editar Post</h2> </div>
+        </ng-template>
     </ng-template>
   </div>
+
   @if(locationPath === '/home'){
   <app-tweet-box></app-tweet-box>
   }
 
-  <div *ngFor="let tweet of tweets.slice().reverse()" [attr.key]="tweet.tid">
+  <div *ngFor="let post of posts">
     <app-post
-      [id]="tweet.tid"
-      [name]="tweet.name"
-      [content]="tweet.content"
-      [imgurl]="tweet.imgurl"
+      [id]="post.id"
+      [name]="post.name"
+      [content]="post.content"
+      [avatar]="post.avatar"
+      [createdAt]="post.createdAt"
+      [title]="post.title"
+      (viewPostDetail)="onViewPostDetail($event)"
+      (postDeleted)="onPostDeleted($event)"
     ></app-post>
   </div>
 </div>

@@ -1,57 +1,105 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, OnInit,inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { PostComponent } from '../post/post.component';
-import { TweetBoxComponent } from '../tweetBox/tweet-box/tweet-box.component';
 
+import { Component, OnInit, inject } from '@angular/core';
+
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+
+import { PostComponent } from '../post/post.component';
+
+import { TweetBoxComponent } from '../tweetBox/tweet-box.component';
+
+import { PostService } from '../../services/post.service';
+
+import { Post } from '../../interface/post';
 
 @Component({
   selector: 'app-feed',
-  imports: [CommonModule, RouterModule,PostComponent,TweetBoxComponent,],
+
+  imports: [CommonModule, RouterModule, PostComponent, TweetBoxComponent],
+
   templateUrl: './feed.component.html',
-  styleUrl: './feed.component.scss'
+
+  styleUrl: './feed.component.scss',
 })
 export class FeedComponent implements OnInit {
-  tweets: any[] = [];
-  private location = inject(Location)
+  private postService = inject(PostService);
 
-  constructor() {}
+  private location = inject(Location);
+
+  private router = inject(Router);
+
+  private activatedRoute = inject(ActivatedRoute);
+
+  posts: Post[] = [];
+
+  currentPost: Post | undefined;
 
   get locationPath(): string {
-    return this.location.path() || '/home'; 
+    return this.location.path() || '/home';
   }
 
   ngOnInit(): void {
-   
-    this.getTweets();
+    this.activatedRoute.paramMap.subscribe((params) => {
+      const postId = params.get('id');
+
+      if (postId) {
+        console.log(postId);
+
+        this.getSinglePost(postId);
+      } else {
+        this.getAllPosts();
+      }
+    });
   }
 
-  getTweets(): void {
-    this.tweets = [
-    {
-      tid: '1',
-      name: 'Juan Pérez',
-      content: 'Este es mi primer tweet con Angular 🚀',
-      imgurl: 'https://i.pravatar.cc/150?img=1'
-    },
-    {
-      tid: '2',
-      name: 'Ana Gómez',
-      content: '¡Me encanta programar en Angular! 💻',
-      imgurl: 'https://i.pravatar.cc/150?img=2'
-    },
-    {
-      tid: '3',
-      name: 'Carlos López',
-      content: 'Hoy aprendí a usar componentes dinámicos 👨‍💻',
-      imgurl: 'https://i.pravatar.cc/150?img=3'
-    },
-    {
-      tid: '4',
-      name: 'Laura Rodríguez',
-      content: '¿Alguien más emocionado por el nuevo release? 🔥',
-      imgurl: 'https://i.pravatar.cc/150?img=4'
+  getAllPosts(): void {
+    this.postService.getPosts().subscribe({
+      next: (retrievedPosts: Post[]) => {
+        this.posts = retrievedPosts;
+        this.currentPost = undefined;
+        console.log('Todos los posts:', retrievedPosts);
+      },
+
+      error: (error) => {
+        console.error('Error al cargar todos los posts:', error);
+      },
+    });
+  }
+
+  getSinglePost(id: string): void {
+    this.postService.getSinglePost(id).subscribe({
+      next: (singlePost: Post) => {
+        this.currentPost = singlePost;
+        this.posts = [singlePost];
+        console.log('Post individual:', singlePost);
+      },
+
+      error: (error) => {
+        console.error('Error al cargar el post individual:', error);
+
+        this.router.navigate(['/posts']);
+      },
+    });
+  }
+
+  onViewPostDetail(postId: string): void {
+    console.log(postId);
+
+    this.router.navigate(['/posts', postId]);
+
+    this.getSinglePost(postId);
+  }
+
+  onPostDeleted(deletedPostId: string): void {
+    if (!this.currentPost) {
+      this.posts = this.posts.filter((post) => post.id !== deletedPostId);
+    } else if (this.currentPost.id === deletedPostId) {
+      this.router.navigate(['/posts']);
     }
-  ];
+  }
+
+  backToHome() {
+    this.router.navigate(['/home']);
+    this.getAllPosts();
   }
 }
