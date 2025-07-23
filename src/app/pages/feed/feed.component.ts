@@ -11,6 +11,7 @@ import { TweetBoxComponent } from '../tweetBox/tweet-box.component';
 import { PostService } from '../../services/post.service';
 
 import { Post } from '../../interface/post';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-feed',
@@ -53,17 +54,19 @@ export class FeedComponent implements OnInit {
   }
 
   getAllPosts(): void {
-    this.postService.getPosts().subscribe({
-      next: (retrievedPosts: Post[]) => {
-        this.posts = retrievedPosts;
-        this.currentPost = undefined;
-        console.log('Todos los posts:', retrievedPosts);
-      },
-
-      error: (error) => {
-        console.error('Error al cargar todos los posts:', error);
-      },
-    });
+    this.postService
+      .getPosts()
+      .pipe(map((posts: Post[]) => posts.reverse()))
+      .subscribe({
+        next: (retrievedPosts: Post[]) => {
+          this.posts = retrievedPosts;
+          this.currentPost = undefined;
+          console.log('Todos los posts (orden inverso):', retrievedPosts);
+        },
+        error: (error) => {
+          console.error('Error al cargar todos los posts:', error);
+        },
+      });
   }
 
   getSinglePost(id: string): void {
@@ -96,6 +99,10 @@ export class FeedComponent implements OnInit {
     } else if (this.currentPost.id === deletedPostId) {
       this.router.navigate(['/posts']);
     }
+  }
+
+  onPostCreated(newPost: Post): void {
+    this.posts.unshift(newPost);
   }
 
   backToHome() {

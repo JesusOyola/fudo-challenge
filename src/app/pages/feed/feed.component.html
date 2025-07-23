@@ -33,7 +33,7 @@
   </div>
 
   @if(locationPath === '/home'){
-  <app-tweet-box></app-tweet-box>
+  <app-tweet-box (postCreated)="onPostCreated($event)"></app-tweet-box>
   }
 
   <div *ngFor="let post of posts">
