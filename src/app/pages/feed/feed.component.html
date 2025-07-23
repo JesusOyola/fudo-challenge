@@ -5,16 +5,17 @@
     </ng-container>
 
     <ng-template #notHome>
-     
-        <span matTooltip="Volver" (click)="backToHome()">
-          <span class="material-icons feed-arrowIcon" title="Volver"
-            >arrow_back</span
-          >
-        </span>
-      
+      <span matTooltip="Volver" (click)="backToHome()">
+        <span class="material-icons feed-arrowIcon" title="Volver"
+          >arrow_back</span
+        >
+      </span>
 
       <ng-container
-        *ngIf="locationPath.startsWith('/posts/') && !locationPath.includes('/edit'); else showPostInfo"
+        *ngIf="
+          locationPath.startsWith('/posts/') && !locationPath.includes('/edit');
+          else showPostInfo
+        "
       >
         <h2>Detalle del Post</h2>
       </ng-container>
@@ -22,13 +23,19 @@
       <ng-template #showPostInfo>
         <div class="feed-tweet" *ngIf="currentPost">
           <h2>{{ currentPost.name }}</h2>
+
           <div>
             <span class="material-icons feed-badge">verified</span>
           </div>
         </div>
-        <div class="feed-tweet" *ngIf="!currentPost && locationPath.includes('/edit')">
-            <h2>Editar Post</h2> </div>
-        </ng-template>
+
+        <div
+          class="feed-tweet"
+          *ngIf="!currentPost && locationPath.includes('/edit')"
+        >
+          <h2>Editar Post</h2>
+        </div>
+      </ng-template>
     </ng-template>
   </div>
 
@@ -36,7 +43,8 @@
   <app-tweet-box (postCreated)="onPostCreated($event)"></app-tweet-box>
   }
 
-  <div *ngFor="let post of posts">
+  <div class="feed-posts">
+    @for (post of posts; track post.id) {
     <app-post
       [id]="post.id"
       [name]="post.name"
@@ -46,6 +54,8 @@
       [title]="post.title"
       (viewPostDetail)="onViewPostDetail($event)"
       (postDeleted)="onPostDeleted($event)"
+      (postUpdated)="onPostUpdatedFromPostComponent($event)"
     ></app-post>
+    }
   </div>
 </div>

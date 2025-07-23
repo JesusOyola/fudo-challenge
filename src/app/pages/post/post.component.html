@@ -33,22 +33,55 @@
           </p>
         </div>
       </div>
-      <div class="post-trash" title="Borrar">
-        <span class="material-icons" (click)="deleteTweet()">delete</span>
+      <div class="post-trash-edit-icons">
+        @if (locationPath.includes('/post')) { @if (!isEditing &&
+        locationPath.includes('/post')) {
+        <span
+          class="material-icons edit-icon"
+          title="Editar"
+          (click)="toggleEditMode()"
+          >edit</span
+        >
+        } @else {
+        <span
+          class="material-icons save-icon"
+          title="Guardar"
+          (click)="onSaveEdit()"
+          >done</span
+        >
+        <span
+          class="material-icons cancel-icon"
+          title="Cancelar"
+          (click)="onCancelEdit()"
+          >close</span
+        >
+        }}
+        <span
+          class="material-icons trash-icon"
+          title="Borrar"
+          (click)="deleteTweet()"
+          >delete</span
+        >
       </div>
     </div>
-  </div>
 
-  <div class="post-body">
-    @if(locationPath.includes('/posts')){
-    <p class="content-text">{{ content }}</p>
-    }
-  </div>
+    <div class="post-body">
+      @if(locationPath.includes('/posts')){ @if (!isEditing) {
+      <p class="content-text">{{ content }}</p>
+      } @else {
+      <textarea
+        [(ngModel)]="editedContent"
+        rows="5"
+        class="content-edit-textarea"
+      ></textarea>
+      } }
+    </div>
 
-  <div class="post-footer">
-    <span class="material-icons">chat_bubble_outline</span>
-    <span class="material-icons">repeat</span>
-    <span class="material-icons">favorite_border</span>
-    <span class="material-icons">publish</span>
+    <div class="post-footer">
+      <span class="material-icons">chat_bubble_outline</span>
+      <span class="material-icons">repeat</span>
+      <span class="material-icons">favorite_border</span>
+      <span class="material-icons">publish</span>
+    </div>
   </div>
 </div>

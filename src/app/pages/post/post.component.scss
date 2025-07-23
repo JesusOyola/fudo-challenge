@@ -5,6 +5,7 @@
 
 .post-header {
   display: flex;
+  flex-direction: column;
 }
 
 .post-headerElements {
@@ -33,13 +34,23 @@
   text-decoration: underline;
 }
 
-.post-trash {
-  color: var(--twitter-color);
+.post-trash-edit-icons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 8%;
   margin-right: 15px;
 }
 
-.post-trash:hover {
+.post-trash-edit-icons:hover {
   cursor: pointer;
+}
+
+.trash-icon {
+  color: var(--twitter-color);
+}
+.edit-icon {
+  color: red;
 }
 
 .post-headerContent > p {

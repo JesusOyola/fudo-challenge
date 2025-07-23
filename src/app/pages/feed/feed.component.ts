@@ -1,38 +1,25 @@
 import { CommonModule, Location } from '@angular/common';
-
 import { Component, OnInit, inject } from '@angular/core';
-
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-
 import { PostComponent } from '../post/post.component';
-
 import { TweetBoxComponent } from '../tweetBox/tweet-box.component';
-
 import { PostService } from '../../services/post.service';
-
 import { Post } from '../../interface/post';
 import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-feed',
-
   imports: [CommonModule, RouterModule, PostComponent, TweetBoxComponent],
-
   templateUrl: './feed.component.html',
-
   styleUrl: './feed.component.scss',
 })
 export class FeedComponent implements OnInit {
   private postService = inject(PostService);
-
   private location = inject(Location);
-
   private router = inject(Router);
-
   private activatedRoute = inject(ActivatedRoute);
 
   posts: Post[] = [];
-
   currentPost: Post | undefined;
 
   get locationPath(): string {
@@ -45,7 +32,6 @@ export class FeedComponent implements OnInit {
 
       if (postId) {
         console.log(postId);
-
         this.getSinglePost(postId);
       } else {
         this.getAllPosts();
@@ -76,10 +62,8 @@ export class FeedComponent implements OnInit {
         this.posts = [singlePost];
         console.log('Post individual:', singlePost);
       },
-
       error: (error) => {
         console.error('Error al cargar el post individual:', error);
-
         this.router.navigate(['/posts']);
       },
     });
@@ -87,18 +71,28 @@ export class FeedComponent implements OnInit {
 
   onViewPostDetail(postId: string): void {
     console.log(postId);
-
     this.router.navigate(['/posts', postId]);
-
     this.getSinglePost(postId);
   }
 
   onPostDeleted(deletedPostId: string): void {
-    if (!this.currentPost) {
-      this.posts = this.posts.filter((post) => post.id !== deletedPostId);
-    } else if (this.currentPost.id === deletedPostId) {
+    if (this.currentPost && this.currentPost.id === deletedPostId) {
       this.router.navigate(['/posts']);
+    } else {
+      this.posts = this.posts.filter((post) => post.id !== deletedPostId);
     }
+  }
+
+  onPostUpdatedFromPostComponent(updatedPost: Post): void {
+    this.posts = this.posts.map((p) =>
+      p.id === updatedPost.id ? updatedPost : p
+    );
+
+    if (this.currentPost && this.currentPost.id === updatedPost.id) {
+      this.currentPost = updatedPost;
+      this.backToHome();
+    }
+    console.log('Post actualizado recibido desde PostComponent:', updatedPost);
   }
 
   onPostCreated(newPost: Post): void {
