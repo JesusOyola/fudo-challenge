@@ -1,52 +1,71 @@
 .feed {
-    flex: 0.45;
-    border-right: 1px solid var(--twitter-background);
-    min-width: 500px;
-    overflow-y: scroll;
-  }
-  
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .feed::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .feed {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
-  
-  .feed-header {
-    display: flex;
-    position: sticky;
-    top: 0;
-    background-color: white;
-    z-index: 100;
-    border: 1px solid var(--twitter-background);
-    padding: 15px 20px;
-  }
-  
-  .feed-header > h2 {
-    font-size: 20px;
-    font-weight: 800;
-  }
-  
-  .feed-tweet {
-    display: flex;
-    align-items: baseline;
-  }
-  
-  .feed-arrowIcon {
-    margin-right: 15px;
-    color: var(--twitter-color);
-  }
-  
-  .feed-arrowIcon:hover {
-    cursor: pointer;
-  }
-  
-  .feed-badge {
-    font-size: 18px !important;
-    color: var(--twitter-color);
-    padding-left: 5px;
-  }
-  
+  flex: 0.45;
+  border-right: 1px solid var(--twitter-background);
+  min-width: 500px;
+  overflow-y: scroll;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.feed::-webkit-scrollbar {
+  display: none;
+}
+
+.feed {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.feed-header {
+  display: flex;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 100;
+  border: 1px solid var(--twitter-background);
+  padding: 15px 20px;
+}
+
+.feed-header > h2 {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.feed-tweet {
+  display: flex;
+  align-items: baseline;
+}
+
+.feed-arrowIcon {
+  margin-right: 15px;
+  color: var(--twitter-color);
+}
+
+.feed-arrowIcon:hover {
+  cursor: pointer;
+}
+
+.feed-badge {
+  font-size: 18px !important;
+  color: var(--twitter-color);
+  padding-left: 5px;
+}
+
+.comments-section,
+.comment-item,
+.comment-text {
+  margin-top: 1rem;
+}
+.comment-date {
+  padding-left: 10px;
+  font-size: 15px;
+  display: inline;
+}
+
+.trash-icon {
+  color: var(--twitter-color);
+  margin-left: 49rem;
+}
+
+.trash-icon:hover {
+  cursor: pointer;
+}
