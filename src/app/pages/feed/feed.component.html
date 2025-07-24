@@ -62,6 +62,12 @@
   @if (currentPost) {
   <div class="comments-section">
     <h3>Comentarios</h3>
+    <app-tweet-box
+      [mode]="'comment'"
+      [parentId]="currentPost.id"
+      (commentCreated)="onCommentCreated($event)"
+    ></app-tweet-box>
+
     @if (comments.length > 0) { @for (comment of comments; track comment.id) {
     <div class="comment-item">
       <div class="comment-avatar">
@@ -83,7 +89,6 @@
             (click)="deleteComment(comment.id)"
             >delete</span
           >
-          
         </div>
         <p class="comment-text">{{ comment.content }}</p>
       </div>
