@@ -40,7 +40,7 @@ export class CommentService {
 
   deleteComment(postId: string, commentId: string): Observable<Comment> {
     return this.http.delete<Comment>(
-      `${this.baseUrl}/${postId}/comment/${commentId}`
+      `${this.baseUrl}/post/${postId}/comment/${commentId}`
     );
   }
 
