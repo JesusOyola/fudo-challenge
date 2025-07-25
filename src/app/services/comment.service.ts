@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, Observable, of, throwError } from 'rxjs';
+import { catchError, concatMap, Observable, of, throwError } from 'rxjs';
 import { Comment } from '../interface/comment';
 
 @Injectable({
@@ -15,15 +15,20 @@ export class CommentService {
     console.log(`Fetching comments from: ${url}`);
     return this.http.get<Comment[]>(url).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Si el error es un 404 (Not Found), significa que no hay comentarios.
-        // En lugar de propagar el error, devolvemos un array vacío exitosamente.
         if (error.status === 404) {
-          console.warn(`No comments found for post ${postId}. Returning empty array.`);
-          return of([]); // Esto emite un array vacío como si fuera una respuesta exitosa
+          console.warn(
+            `No comments found for post ${postId}. Returning empty array.`
+          );
+          return of([]);
         }
-        // Para cualquier otro tipo de error (red, servidor, etc.), lo propagamos
+
         console.error('Error fetching comments:', error);
-        return throwError(() => new Error(`Failed to fetch comments for post ${postId}: ${error.message}`));
+        return throwError(
+          () =>
+            new Error(
+              `Failed to fetch comments for post ${postId}: ${error.message}`
+            )
+        );
       })
     );
   }
@@ -46,12 +51,31 @@ export class CommentService {
 
   updateComment(
     postId: string,
-    commentId: string,
-    comment: Partial<Comment>
+    originalComment: Comment,
+    updatedContent: string
   ): Observable<Comment> {
-    return this.http.put<Comment>(
-      `${this.baseUrl}/${postId}/comment/${commentId}`,
-      comment
+    return this.deleteComment(postId, originalComment.id).pipe(
+      concatMap(() => {
+        const newCommentData: Partial<Comment> = {
+          name: originalComment.name,
+          avatar: originalComment.avatar,
+          parentId: originalComment.parentId,
+          content: updatedContent.trim(),
+          createdAt: new Date().toISOString(),
+        };
+        console.log("Creating 'edited' comment:", newCommentData);
+        return this.createComment(postId, newCommentData);
+      }),
+      catchError((error: HttpErrorResponse) => {
+        console.error(
+          `Error in simulated update for comment ${originalComment.id}:`,
+          error
+        );
+        return throwError(
+          () =>
+            new Error(`Failed to simulate update for comment: ${error.message}`)
+        );
+      })
     );
   }
 }

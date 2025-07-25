@@ -1,3 +1,4 @@
+// src/app/components/feed/feed.component.ts
 import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -8,10 +9,17 @@ import { CommentService } from '../../services/comment.service';
 import { Post } from '../../interface/post';
 import { Comment } from '../../interface/comment';
 import { map, switchMap } from 'rxjs/operators';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-feed',
-  imports: [CommonModule, RouterModule, PostComponent, TweetBoxComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    PostComponent,
+    TweetBoxComponent,
+    FormsModule,
+  ],
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.scss',
 })
@@ -25,6 +33,9 @@ export class FeedComponent implements OnInit {
   posts: Post[] = [];
   currentPost: Post | undefined;
   comments: Comment[] = [];
+
+  editingCommentId: string | null = null;
+  editedCommentContent: string = '';
 
   get locationPath(): string {
     return this.location.path() || '/home';
@@ -98,7 +109,7 @@ export class FeedComponent implements OnInit {
 
           alert(
             'Hubo un error al cargar el post o sus comentarios. Por favor, inténtalo de nuevo más tarde o verifica la URL.'
-          ); // Informar al usuario
+          );
         },
       });
   }
@@ -181,13 +192,69 @@ export class FeedComponent implements OnInit {
       .deleteComment(this.currentPost.id, commentId)
       .subscribe({
         next: () => {
+          console.log(`Comment ${commentId} deleted successfully.`);
           this.comments = this.comments.filter(
             (comment) => comment.id !== commentId
           );
+
+          if (this.editingCommentId === commentId) {
+            this.cancelEditComment();
+          }
         },
         error: (error) => {
           console.error('Error deleting the comment:', error);
           alert('Hubo un error al eliminar el comentario. Inténtalo de nuevo.');
+        },
+      });
+  }
+
+  editComment(comment: Comment): void {
+    this.editingCommentId = comment.id;
+    this.editedCommentContent = comment.content;
+    console.log(
+      `Editing comment: ${comment.id}, content: "${comment.content}"`
+    );
+  }
+
+  cancelEditComment(): void {
+    this.editingCommentId = null;
+    this.editedCommentContent = '';
+    console.log('Edit mode cancelled.');
+  }
+
+  saveEditedComment(originalComment: Comment): void {
+    if (!this.currentPost) {
+      console.error('Cannot save comment: currentPost is not defined.');
+      return;
+    }
+    if (!this.editedCommentContent.trim()) {
+      alert('El contenido del comentario no puede estar vacío.');
+      return;
+    }
+
+    const updatedData: string = this.editedCommentContent.trim();
+
+    console.log(
+      `Saving edited comment ${originalComment.id} for post ${this.currentPost.id} via PUT...`,
+      updatedData
+    );
+
+    this.commentService
+      .updateComment(this.currentPost.id, originalComment, updatedData)
+      .subscribe({
+        next: (updatedComment: Comment) => {
+          console.log('Comment updated successfully via PUT:', updatedComment);
+
+          this.comments = this.comments.map((c) =>
+            c.id === updatedComment.id ? updatedComment : c
+          );
+          this.cancelEditComment();
+        },
+        error: (error) => {
+          console.error('Error saving edited comment via PUT:', error);
+          alert(
+            'Hubo un error al guardar los cambios. Inténtalo de nuevo. Considera que esta API podría no soportar PUT para comentarios anidados.'
+          );
         },
       });
   }

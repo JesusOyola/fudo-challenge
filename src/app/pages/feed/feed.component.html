@@ -68,33 +68,55 @@
       (commentCreated)="onCommentCreated($event)"
     ></app-tweet-box>
 
-    @if (comments.length > 0) { @for (comment of comments; track comment.id) {
-    <div class="comment-item">
-      <div class="comment-avatar">
-        <img
-          [src]="getCommentAvatarSrc(comment.avatar)"
-          alt="avatar"
-          width="30"
-        />
-      </div>
-      <div class="comment-content-wrapper">
-        <div class="comment-author-date">
-          <strong>{{ comment.name }}</strong>
-          <span class="comment-date">{{
-            comment.createdAt | date : "short"
-          }}</span>
-          <span
-            class="material-icons trash-icon"
-            title="Borrar"
-            (click)="deleteComment(comment.id)"
-            >delete</span
-          >
+    @if (comments.length > 0) {
+      @for (comment of comments; track comment.id) {
+        <div class="comment-item">
+          <div class="comment-avatar">
+            <img
+              [src]="getCommentAvatarSrc(comment.avatar)"
+              alt="avatar"
+              width="30"
+            />
+          </div>
+          <div class="comment-content-wrapper">
+            <div class="comment-author-date">
+              <strong>{{ comment.name }}</strong>
+              <span class="comment-date">{{
+                comment.createdAt | date : "short"
+              }}</span>
+              <span
+                class="material-icons trash-icon"
+                title="Borrar"
+                (click)="deleteComment(comment.id)"
+                >delete</span
+              >
+              <span
+                *ngIf="editingCommentId !== comment.id"
+                class="material-icons edit-icon"
+                title="Editar"
+                (click)="editComment(comment)"
+                >edit</span
+              >
+            </div>
+            
+            @if (editingCommentId === comment.id) {
+              <textarea
+                [(ngModel)]="editedCommentContent"
+                class="comment-edit-textarea"
+                rows="3"
+              ></textarea>
+              <div class="edit-actions">
+                <button (click)="saveEditedComment(comment)" class="save-button">Guardar</button>
+                <button (click)="cancelEditComment()" class="cancel-button">Cancelar</button>
+              </div>
+            } @else {
+              <p class="comment-text">{{ comment.content }}</p>
+            }
+          </div>
         </div>
-        <p class="comment-text">{{ comment.content }}</p>
-      </div>
-    </div>
-    } } @else {
-    <p>No hay comentarios para este post.</p>
+      }
+    } @else {
+      <p>No hay comentarios para este post.</p>
     }
   </div>
   }
