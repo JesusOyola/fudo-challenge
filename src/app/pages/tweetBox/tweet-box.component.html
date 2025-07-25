@@ -2,66 +2,100 @@
   <form (ngSubmit)="handleAction()">
     <div class="tweetBox-user">
       <img
-        [src]="avatar || 'https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L.png'"
+        [src]="
+          avatar ||
+          'https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L.png'
+        "
         alt="User Avatar"
         width="48"
-        (error)="avatar = 'https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L.png'"
+        (error)="
+          avatar =
+            'https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L.png'
+        "
       />
-      @if (mode === 'post' || mode === 'comment' || mode === 'replyComment' || mode === 'editPost' || mode === 'editComment') {
-        <input
-          type="text"
-          placeholder="Ingresá tu nombre"
-          [(ngModel)]="name"
-          name="name"
-          required
-        />
+      @if (mode === 'post' || mode === 'comment' || mode === 'replyComment' ||
+      mode === 'editPost' || mode === 'editComment') {
+      <input
+        type="text"
+        placeholder="Ingresá tu nombre"
+        [(ngModel)]="name"
+        name="name"
+        required
+      />
       }
     </div>
 
     <div class="tweetBox-content">
       @if (mode === 'post' || mode === 'editPost') {
-        <input
-          type="text"
-          placeholder="Título (opcional)"
-          [(ngModel)]="title"
-          name="title"
-          class="tweetBox__titleInput"
-        />
+      <input
+        type="text"
+        placeholder="Título (opcional)"
+        [(ngModel)]="title"
+        name="title"
+        class="tweetBox__titleInput"
+      />
       }
-      <textarea
-        placeholder="{{ mode === 'comment' ? 'Escribe un comentario...' : (mode === 'replyComment' ? 'Responde a este comentario...' : '¿Qué está pasando?') }}"
-        [(ngModel)]="content"
-        name="content"
-        rows="3"
-        required
-      ></textarea>
+
+      <div _ngcontent-ng-c1748553535="" class="tweetBox-content">
+        <input
+          _ngcontent-ng-c1748553535=""
+          type="text"
+          placeholder="{{
+            mode === 'comment'
+              ? 'Escribe un comentario...'
+              : mode === 'replyComment'
+              ? 'Responde a este comentario...'
+              : '¿Qué está pasando?'
+          }}"
+          name="content"
+          [(ngModel)]="content"
+          required=""
+          ng-reflect-required=""
+          ng-reflect-name="content"
+          ng-reflect-model=""
+          class="ng-untouched ng-pristine ng-invalid"
+        />
+      </div>
+      
     </div>
 
     <div class="tweetBox-footer">
       @if (mode === 'post' || mode === 'comment' || mode === 'replyComment') {
-        <input
-          type="text"
-          placeholder="Ingresá una URL de imagen (opcional)"
-          [(ngModel)]="imgurl"
-          name="imgurl"
-          class="tweetBox-img"
-        />
-      }
-      
-      @if (mode === 'post' || mode === 'comment' || mode === 'replyComment') {
-        <button type="submit" class="tweetBox__tweetButton">
-          {{ mode === 'comment' ? 'Comentar' : (mode === 'replyComment' ? 'Responder' : 'Twittear') }}
+      <input
+        type="text"
+        placeholder="Ingresá una URL de imagen (opcional)"
+        [(ngModel)]="imgurl"
+        name="imgurl"
+        class="tweetBox-img"
+      />
+      } @if (mode === 'post' || mode === 'comment' || mode === 'replyComment') {
+      <button
+        _ngcontent-ng-c1748553535=""
+        type="submit"
+        class="tweetBox-tweetButton"
+      >
+        {{
+          mode === "comment"
+            ? "Comentar"
+            : mode === "replyComment"
+            ? "Responder"
+            : "Twittear"
+        }}
+      </button>
+    
+      } @if (mode === 'editPost' || mode === 'editComment') {
+      <div class="edit-actions">
+        <button type="submit" class="tweetBox__tweetButton save-button">
+          Guardar Cambios
         </button>
-      }
-      @if (mode === 'editPost' || mode === 'editComment') {
-        <div class="edit-actions">
-          <button type="submit" class="tweetBox__tweetButton save-button">
-            Guardar Cambios
-          </button>
-          <button type="button" class="tweetBox__cancelButton" (click)="onCancel()">
-            Cancelar
-          </button>
-        </div>
+        <button
+          type="button"
+          class="tweetBox__cancelButton"
+          (click)="onCancel()"
+        >
+          Cancelar
+        </button>
+      </div>
       }
     </div>
   </form>
