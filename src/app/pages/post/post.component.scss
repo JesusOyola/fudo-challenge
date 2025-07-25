@@ -1,6 +1,10 @@
 .post {
   border-bottom: 1px solid var(--twitter-background);
   padding: 20px 10px;
+  border-radius: 35px;
+  border: 1px solid var(--twitter-background);
+  margin-top: 1rem;
+  
 }
 
 .post-header {
@@ -59,6 +63,7 @@
   margin-top: 5px;
   margin-bottom: 10px;
   font-size: 15px;
+  width: 1000px;
 }
 
 .post-headerContent > p:hover {

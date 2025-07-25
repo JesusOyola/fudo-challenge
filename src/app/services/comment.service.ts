@@ -23,12 +23,7 @@ export class CommentService {
         }
 
         console.error('Error fetching comments:', error);
-        return throwError(
-          () =>
-            new Error(
-              `Failed to fetch comments for post ${postId}: ${error.message}`
-            )
-        );
+        return throwError(() => error);
       })
     );
   }

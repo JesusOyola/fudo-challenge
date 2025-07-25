@@ -66,7 +66,7 @@ export class TweetBoxComponent implements OnInit, OnChanges {
   private initializeContent(): void {
     if (this.mode === 'editPost' && this.postToEdit) {
       this.content = this.postToEdit.content;
-      this.title = this.postToEdit.title || '';
+      this.title = '';
       this.name = this.postToEdit.name;
       this.avatar = this.postToEdit.avatar;
     } else if (this.mode === 'editComment' && this.commentToEdit) {
@@ -121,7 +121,7 @@ export class TweetBoxComponent implements OnInit, OnChanges {
       name: this.name.trim(),
       avatar: this.avatar,
       content: this.content.trim(),
-      title: this.title.trim().substring(0, 50) + '...',
+      title: '',
       createdAt: new Date().toISOString(),
     };
     this.postService.createPost(newPost).subscribe({
@@ -138,7 +138,7 @@ export class TweetBoxComponent implements OnInit, OnChanges {
       const updatedPost: Partial<Post> = {
         ...this.postToEdit,
         content: this.content.trim(),
-        title: this.title.trim(),
+        title: '',
         name: this.name,
         avatar: this.avatar,
       };

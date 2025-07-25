@@ -1,7 +1,7 @@
 <div class="feed">
   <div class="feed-header">
     <ng-container *ngIf="locationPath === '/home'; else notHome">
-      <h2>Todos los Posts</h2>
+      <h2>Todos los Tweets</h2>
     </ng-container>
 
     <ng-template #notHome>
@@ -17,7 +17,7 @@
           else showPostInfo
         "
       >
-        <h2>Detalle del Post</h2>
+        <h2>Detalle del Tweet</h2>
       </ng-container>
 
       <ng-template #showPostInfo>
@@ -83,6 +83,7 @@
           <span class="comment-date">{{
             comment.createdAt | date : "short"
           }}</span>
+          <div class="container-icon-comments">
           <span
             class="material-icons trash-icon"
             title="Borrar"
@@ -96,12 +97,11 @@
             (click)="editComment(comment)"
             >edit</span
           >
-          <span
-            class="material-icons reply-icon"
+          <span class="material-icons reply-icon"
             title="Responder"
-            (click)="toggleReplyComment(comment.id)"
-            >reply</span
-          >
+            (click)="toggleReplyComment(comment.id)">chat_bubble_outline</span>
+         
+          </div>
         </div>
 
         @if (editingCommentId === comment.id) {

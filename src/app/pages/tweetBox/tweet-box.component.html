@@ -26,16 +26,6 @@
     </div>
 
     <div class="tweetBox-content">
-      @if (mode === 'post' || mode === 'editPost') {
-      <input
-        type="text"
-        placeholder="Título (opcional)"
-        [(ngModel)]="title"
-        name="title"
-        class="tweetBox__titleInput"
-      />
-      }
-
       <div _ngcontent-ng-c1748553535="" class="tweetBox-content">
         <input
           _ngcontent-ng-c1748553535=""
@@ -56,19 +46,10 @@
           class="ng-untouched ng-pristine ng-invalid"
         />
       </div>
-      
     </div>
 
     <div class="tweetBox-footer">
       @if (mode === 'post' || mode === 'comment' || mode === 'replyComment') {
-      <input
-        type="text"
-        placeholder="Ingresá una URL de imagen (opcional)"
-        [(ngModel)]="imgurl"
-        name="imgurl"
-        class="tweetBox-img"
-      />
-      } @if (mode === 'post' || mode === 'comment' || mode === 'replyComment') {
       <button
         _ngcontent-ng-c1748553535=""
         type="submit"
@@ -82,7 +63,7 @@
             : "Twittear"
         }}
       </button>
-    
+
       } @if (mode === 'editPost' || mode === 'editComment') {
       <div class="edit-actions">
         <button type="submit" class="tweetBox__tweetButton save-button">

@@ -7,6 +7,7 @@ COPY package.json package-lock.json* ./
 RUN npm install
 
 COPY . .
+RUN npm test -- --watch=false --browsers=ChromeHeadless --no-progress
 RUN npm run build 
 
 # Etapa 2: Servir con Nginx
