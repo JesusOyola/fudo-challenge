@@ -1,38 +1,68 @@
 <div class="tweetBox">
-  <form (ngSubmit)="handleSubmit()">
+  <form (ngSubmit)="handleAction()">
     <div class="tweetBox-user">
       <img
-        src="https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L.png"
+        [src]="avatar || 'https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L.png'"
+        alt="User Avatar"
         width="48"
+        (error)="avatar = 'https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L.png'"
       />
-      <input
-        type="text"
-        placeholder="Ingresá tu nombre"
-        [(ngModel)]="name"
-        name="name"
-        required
-      />
+      @if (mode === 'post' || mode === 'comment' || mode === 'replyComment' || mode === 'editPost' || mode === 'editComment') {
+        <input
+          type="text"
+          placeholder="Ingresá tu nombre"
+          [(ngModel)]="name"
+          name="name"
+          required
+        />
+      }
     </div>
 
     <div class="tweetBox-content">
-      <input
-        type="text"
-        placeholder="¿Qué está pasando?"
+      @if (mode === 'post' || mode === 'editPost') {
+        <input
+          type="text"
+          placeholder="Título (opcional)"
+          [(ngModel)]="title"
+          name="title"
+          class="tweetBox__titleInput"
+        />
+      }
+      <textarea
+        placeholder="{{ mode === 'comment' ? 'Escribe un comentario...' : (mode === 'replyComment' ? 'Responde a este comentario...' : '¿Qué está pasando?') }}"
         [(ngModel)]="content"
         name="content"
+        rows="3"
         required
-      />
+      ></textarea>
     </div>
 
     <div class="tweetBox-footer">
-      <input
-        type="text"
-        placeholder="Ingresá una URL de imagen (opcional)"
-        [(ngModel)]="imgurl"
-        name="imgurl"
-        class="tweetBox-img"
-      />
-      <button type="submit" class="tweetBox-tweetButton">Tweet</button>
+      @if (mode === 'post' || mode === 'comment' || mode === 'replyComment') {
+        <input
+          type="text"
+          placeholder="Ingresá una URL de imagen (opcional)"
+          [(ngModel)]="imgurl"
+          name="imgurl"
+          class="tweetBox-img"
+        />
+      }
+      
+      @if (mode === 'post' || mode === 'comment' || mode === 'replyComment') {
+        <button type="submit" class="tweetBox__tweetButton">
+          {{ mode === 'comment' ? 'Comentar' : (mode === 'replyComment' ? 'Responder' : 'Twittear') }}
+        </button>
+      }
+      @if (mode === 'editPost' || mode === 'editComment') {
+        <div class="edit-actions">
+          <button type="submit" class="tweetBox__tweetButton save-button">
+            Guardar Cambios
+          </button>
+          <button type="button" class="tweetBox__cancelButton" (click)="onCancel()">
+            Cancelar
+          </button>
+        </div>
+      }
     </div>
   </form>
 </div>

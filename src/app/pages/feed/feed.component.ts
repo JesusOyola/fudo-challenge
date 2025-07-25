@@ -1,8 +1,6 @@
-// src/app/components/feed/feed.component.ts
 import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { PostComponent } from '../post/post.component';
 import { TweetBoxComponent } from '../tweetBox/tweet-box.component';
 import { PostService } from '../../services/post.service';
 import { CommentService } from '../../services/comment.service';
@@ -10,6 +8,7 @@ import { Post } from '../../interface/post';
 import { Comment } from '../../interface/comment';
 import { map, switchMap } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
+import { PostComponent } from '../post/post.component';
 
 @Component({
   selector: 'app-feed',
@@ -36,6 +35,9 @@ export class FeedComponent implements OnInit {
 
   editingCommentId: string | null = null;
   editedCommentContent: string = '';
+  commentBeingEdited: Comment | null = null;
+
+  replyingToCommentId: string | null = null;
 
   get locationPath(): string {
     return this.location.path() || '/home';
@@ -142,6 +144,32 @@ export class FeedComponent implements OnInit {
     }
   }
 
+  saveEditedComment(updatedComment: Comment): void {
+    console.log(
+      'Comment updated event received from TweetBox:',
+      updatedComment.id
+    );
+    if (!this.currentPost) {
+      console.error('No currentPost to update comment against.');
+      return;
+    }
+
+    if (
+      this.commentBeingEdited &&
+      updatedComment.id !== this.commentBeingEdited.id
+    ) {
+      this.comments = this.comments.filter(
+        (c) => c.id !== this.commentBeingEdited!.id
+      );
+      this.comments.unshift(updatedComment); // Agrega el nuevo comentario
+    } else {
+      this.comments = this.comments.map((c) =>
+        c.id === updatedComment.id ? updatedComment : c
+      );
+    }
+    this.cancelEditComment();
+  }
+
   onPostCreated(newPost: Post): void {
     console.log('New post created:', newPost.id);
     this.posts.unshift(newPost);
@@ -150,6 +178,9 @@ export class FeedComponent implements OnInit {
   onCommentCreated(newComment: Comment): void {
     console.log('New comment created:', newComment.id);
     this.comments.unshift(newComment);
+    if (this.replyingToCommentId) {
+      this.cancelReplyComment();
+    }
   }
 
   backToHome() {
@@ -196,9 +227,11 @@ export class FeedComponent implements OnInit {
           this.comments = this.comments.filter(
             (comment) => comment.id !== commentId
           );
-
           if (this.editingCommentId === commentId) {
             this.cancelEditComment();
+          }
+          if (this.replyingToCommentId === commentId) {
+            this.cancelReplyComment();
           }
         },
         error: (error) => {
@@ -209,8 +242,9 @@ export class FeedComponent implements OnInit {
   }
 
   editComment(comment: Comment): void {
+    this.cancelReplyComment();
     this.editingCommentId = comment.id;
-    this.editedCommentContent = comment.content;
+    this.commentBeingEdited = { ...comment };
     console.log(
       `Editing comment: ${comment.id}, content: "${comment.content}"`
     );
@@ -219,43 +253,22 @@ export class FeedComponent implements OnInit {
   cancelEditComment(): void {
     this.editingCommentId = null;
     this.editedCommentContent = '';
+    this.commentBeingEdited = null;
     console.log('Edit mode cancelled.');
   }
 
-  saveEditedComment(originalComment: Comment): void {
-    if (!this.currentPost) {
-      console.error('Cannot save comment: currentPost is not defined.');
-      return;
+  toggleReplyComment(commentId: string): void {
+    if (this.replyingToCommentId === commentId) {
+      this.cancelReplyComment();
+    } else {
+      this.cancelEditComment();
+      this.replyingToCommentId = commentId;
+      console.log(`Replying to comment ID: ${commentId}`);
     }
-    if (!this.editedCommentContent.trim()) {
-      alert('El contenido del comentario no puede estar vacío.');
-      return;
-    }
+  }
 
-    const updatedData: string = this.editedCommentContent.trim();
-
-    console.log(
-      `Saving edited comment ${originalComment.id} for post ${this.currentPost.id} via PUT...`,
-      updatedData
-    );
-
-    this.commentService
-      .updateComment(this.currentPost.id, originalComment, updatedData)
-      .subscribe({
-        next: (updatedComment: Comment) => {
-          console.log('Comment updated successfully via PUT:', updatedComment);
-
-          this.comments = this.comments.map((c) =>
-            c.id === updatedComment.id ? updatedComment : c
-          );
-          this.cancelEditComment();
-        },
-        error: (error) => {
-          console.error('Error saving edited comment via PUT:', error);
-          alert(
-            'Hubo un error al guardar los cambios. Inténtalo de nuevo. Considera que esta API podría no soportar PUT para comentarios anidados.'
-          );
-        },
-      });
+  cancelReplyComment(): void {
+    this.replyingToCommentId = null;
+    console.log('Reply mode cancelled.');
   }
 }
