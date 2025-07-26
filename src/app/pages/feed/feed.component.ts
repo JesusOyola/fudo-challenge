@@ -161,6 +161,7 @@ export class FeedComponent implements OnInit, OnDestroy {
 
   onPostCreated(newPost: Post): void {
     this.posts.unshift(newPost);
+    
   }
 
   onCommentCreated(newComment: Comment): void {

@@ -66,6 +66,7 @@
     </div>
 
     <div class="post-body">
+      
       @if(locationPath.includes('/posts')){ @if (!isEditing) {
       <p class="content-text">{{ content }}</p>
       } @else {
@@ -74,7 +75,9 @@
         rows="5"
         class="content-edit-textarea"
       ></textarea>
-      } }
+      } }@else{
+        <p class="content-text">{{ content }}</p>
+      }
     </div>
 
     

@@ -1,59 +1,32 @@
-# FudoChallengeApp
+# Fudo Challenge App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.15.
+Aplicación Angular desarrollada como parte de un desafío técnico. El proyecto incluye:
 
-## Development server
+- Desarrollo con Angular 19
+- Tests con Karma y Jasmine
+- Build optimizado para producción
+- Contenedor Docker con NGINX
+- Despliegue automático a GitHub Pages usando GitHub Actions
 
-To start a local development server, run:
 
-```bash
-ng serve
-```
+### Requisitos
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Node.js 20+
+- Angular CLI
+- Docker (opcional, para servir en producción)
+- Navegador moderno
 
-## Code scaffolding
+##  Cómo levantar el proyecto localmente
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### 1. Clonar el repositorio
 
-```bash
-ng generate component component-name
-```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+git clone https://github.com/JesusOyola/fudo-challenge.git
+cd fudo-challenge-app
+- npm install
+- npm start
 
-```bash
-ng generate --help
-```
+##  Build Docker
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- docker build -t fudo-challenge-app .
+- docker run -p 80:80 fudo-challenge-app
