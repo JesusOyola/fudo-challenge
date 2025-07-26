@@ -1,3 +1,4 @@
+@use "../../../scss/breackpoints.scss";
 .feed {
   display: flex;
   flex-direction: column;
@@ -87,9 +88,23 @@
 .container-icon-comments {
   display: flex;
   justify-content: space-around;
+  position: relative;
   width: 10%;
-  margin-left: 50rem;
+  margin-left: 60rem;
 }
 .comment-author-date {
   display: flex;
+}
+
+
+@media (min-width: breackpoints.$md) and (max-width: breackpoints.$lg) {
+  .container-icon-comments{
+  margin-left: 35rem;
+  }
+}
+
+@media (min-width: breackpoints.$lg) and (max-width: breackpoints.$xxl) {
+  .container-icon-comments{
+    margin-left:35rem;
+  }
 }

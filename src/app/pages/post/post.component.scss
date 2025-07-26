@@ -1,10 +1,10 @@
+@use "../../../scss/breackpoints.scss";
 .post {
   border-bottom: 1px solid var(--twitter-background);
   padding: 20px 10px;
   border-radius: 35px;
   border: 1px solid var(--twitter-background);
   margin-top: 1rem;
-  
 }
 
 .post-header {
@@ -46,7 +46,7 @@
   margin-right: 15px;
 }
 
-.post-trash-edit-icons:hover {
+.post-trash-edit-icons, .post-text:hover {
   cursor: pointer;
 }
 
@@ -110,4 +110,16 @@
 
 .content-text {
   margin-bottom: 1rem;
+}
+
+@media (min-width: breackpoints.$md) and (max-width: breackpoints.$lg) {
+  .post-headerContent > p {
+    width: 300px !important;
+  }
+}
+
+@media (min-width: breackpoints.$lg) and (max-width: breackpoints.$xxl) {
+  .post-headerContent > p {
+    width: 700px !important;
+  }
 }
