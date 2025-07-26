@@ -6,11 +6,14 @@ import {
   Input,
   Output,
   OnInit,
+  OnDestroy,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PostService } from '../../services/post.service';
 import { Post } from '../../interface/post';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-post',
@@ -18,7 +21,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './post.component.html',
   styleUrl: './post.component.scss',
 })
-export class PostComponent implements OnInit {
+export class PostComponent implements OnInit, OnDestroy {
   private postService = inject(PostService);
   private location = inject(Location);
 
@@ -36,12 +39,19 @@ export class PostComponent implements OnInit {
   isEditing: boolean = false;
   editedContent: string = '';
 
+  private destroy$ = new Subject<void>();
+
   get locationPath(): string {
     return this.location.path() || '/posts';
   }
 
   ngOnInit(): void {
     this.editedContent = this.content;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   toggleEditMode(): void {
@@ -63,19 +73,21 @@ export class PostComponent implements OnInit {
       createdAt: new Date().toISOString(),
     };
 
-    this.postService.updatePost(this.id, updatedData).subscribe({
-      next: (response) => {
-        this.content = response.content;
-        this.createdAt = response.createdAt;
-        this.postUpdated.emit(response);
-        this.isEditing = false;
-        alert('Post actualizado.');
-      },
-      error: (error) => {
-        console.error('Error al actualizar el post:', error);
-        alert('Hubo un error al actualizar el post. Inténtalo de nuevo.');
-      },
-    });
+    this.postService
+      .updatePost(this.id, updatedData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.content = response.content;
+          this.createdAt = response.createdAt;
+          this.postUpdated.emit(response);
+          this.isEditing = false;
+          alert('Post actualizado.');
+        },
+        error: (error) => {
+          alert('Hubo un error al actualizar el post. Inténtalo de nuevo.');
+        },
+      });
   }
 
   onCancelEdit(): void {
@@ -89,15 +101,17 @@ export class PostComponent implements OnInit {
 
   deleteTweet(): void {
     if (confirm('¿Estás seguro de que quieres eliminar este post?')) {
-      this.postService.deletePost(this.id).subscribe({
-        next: () => {
-          console.log('Post eliminado:', this.id);
-          this.postDeleted.emit(this.id);
-        },
-        error: (error) => {
-          console.error('Error al eliminar el post:', error);
-        },
-      });
+      this.postService
+        .deletePost(this.id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.postDeleted.emit(this.id);
+          },
+          error: (error) => {
+            console.error('Error al eliminar el post:', error);
+          },
+        });
     }
   }
 }

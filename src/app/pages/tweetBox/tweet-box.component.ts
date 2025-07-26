@@ -6,6 +6,7 @@ import {
   Output,
   OnChanges,
   SimpleChanges,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +14,8 @@ import { PostService } from '../../services/post.service';
 import { Post } from '../../interface/post';
 import { CommentService } from '../../services/comment.service';
 import { Comment } from '../../interface/comment';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tweet-box',
@@ -20,7 +23,7 @@ import { Comment } from '../../interface/comment';
   templateUrl: './tweet-box.component.html',
   styleUrl: './tweet-box.component.scss',
 })
-export class TweetBoxComponent implements OnInit, OnChanges {
+export class TweetBoxComponent implements OnInit, OnChanges, OnDestroy {
   @Input() mode:
     | 'post'
     | 'comment'
@@ -48,6 +51,8 @@ export class TweetBoxComponent implements OnInit, OnChanges {
   title: string = '';
   imgurl: string = '';
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     private postService: PostService,
     private commentService: CommentService
@@ -61,6 +66,11 @@ export class TweetBoxComponent implements OnInit, OnChanges {
     if (changes['commentToEdit'] || changes['postToEdit'] || changes['mode']) {
       this.initializeContent();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private initializeContent(): void {
@@ -124,13 +134,16 @@ export class TweetBoxComponent implements OnInit, OnChanges {
       title: '',
       createdAt: new Date().toISOString(),
     };
-    this.postService.createPost(newPost).subscribe({
-      next: (post) => {
-        this.postCreated.emit(post);
-        this.resetForm();
-      },
-      error: (error) => console.error('Error creating post:', error),
-    });
+    this.postService
+      .createPost(newPost)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (post) => {
+          this.postCreated.emit(post);
+          this.resetForm();
+        },
+        error: (error) => console.error('Error creating post:', error),
+      });
   }
 
   updatePost(): void {
@@ -143,22 +156,21 @@ export class TweetBoxComponent implements OnInit, OnChanges {
         avatar: this.avatar,
       };
 
-      this.postService.updatePost(this.postToEdit.id, updatedPost).subscribe({
-        next: (post) => {
-          console.log('Post updated successfully:', post);
-          this.postUpdated.emit(post);
-          this.resetForm();
-        },
-        error: (error) => console.error('Error updating post:', error),
-      });
+      this.postService
+        .updatePost(this.postToEdit.id, updatedPost)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (post) => {
+            this.postUpdated.emit(post);
+            this.resetForm();
+          },
+          error: (error) => console.error('Error updating post:', error),
+        });
     }
   }
 
   createComment(): void {
     if (!this.parentId) {
-      console.error(
-        'Error: El modo comentario requiere un parentId (ID del post).'
-      );
       alert('No se puede crear el comentario sin un post asociado.');
       return;
     }
@@ -171,13 +183,16 @@ export class TweetBoxComponent implements OnInit, OnChanges {
       parentId: this.parentId,
     };
 
-    this.commentService.createComment(this.parentId, newComment).subscribe({
-      next: (comment) => {
-        this.commentCreated.emit(comment);
-        this.resetForm();
-      },
-      error: (error) => console.error('Error creating comment:', error),
-    });
+    this.commentService
+      .createComment(this.parentId, newComment)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (comment) => {
+          this.commentCreated.emit(comment);
+          this.resetForm();
+        },
+        error: (error) => console.error('Error creating comment:', error),
+      });
   }
 
   updateComment(): void {

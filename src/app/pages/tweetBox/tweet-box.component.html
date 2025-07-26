@@ -66,16 +66,19 @@
 
       } @if (mode === 'editPost' || mode === 'editComment') {
       <div class="edit-actions">
-        <button type="submit" class="tweetBox__tweetButton save-button">
-          Guardar Cambios
-        </button>
         <button
-          type="button"
-          class="tweetBox__cancelButton"
-          (click)="onCancel()"
-        >
-          Cancelar
-        </button>
+        type="submit" class="tweetBox-tweetButton"
+      >
+       Guardar Cambios
+      </button>
+        
+        
+        <button
+        type="button" class="tweetBox-cancelButton"
+        (click)="onCancel()"
+      >
+       Cancelar
+      </button>
       </div>
       }
     </div>

@@ -5,22 +5,12 @@ import { Router } from '@angular/router';
   selector: 'app-sidebar',
   imports: [],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.scss'
+  styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
-  private router = inject(Router)
-
-  getTweets() {
-    console.log('getTweets llamado');
-    
-  }
+  private router = inject(Router);
 
   isActive(path: string): boolean {
     return this.router.url === path;
   }
-
-  /* backToHome(){
-    this.router.navigate(['/home']);
-    this.getAllPosts()
-  } */
 }
