@@ -30,3 +30,6 @@ cd fudo-challenge-app
 
 - docker build -t fudo-challenge-app .
 - docker run -p 80:80 fudo-challenge-app
+
+### URL GITHUB PAGES
+- https://jesusoyola.github.io/fudo-challenge/home
